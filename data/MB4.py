@@ -60,10 +60,10 @@ class MRFDataset(BaseDataset):
             for j in range(slice_N[person[i]-1]):
                 print('j: ', j)
                 self.data_paths.append({
-                    'imMRF': d_root+'MB4/'+ person_path[person[i]-1]+'/'+a[4]+'/imMRF_all_simulated.mat',
-                    'Tmap': d_root+'MB4/Labels/'+person_path[person[i]-1]+'/'+label_dir[4]+'/patternmatching.mat', # sparse dict
+                    'imMRF': d_root+'MB4/'+ person_path[person[i]-1]+'/'+a[j]+'/imMRF_all_simulated.mat',
+                    'Tmap': d_root+'MB4/Labels/'+person_path[person[i]-1]+'/'+label_dir[j]+'/patternmatching.mat', # sparse dict
                     # 'Tmap': d_root+person_path[person[i]-1]+'/'+a[j]+'/patternmatching_densedict.mat', # dense dict
-                    'mask': d_root+'training/Masks/'+person_path[person[i]-1]+'/'+mask_dir[4]+'/immask.mat' # large mask
+                    'mask': d_root+'training/Masks/'+person_path[person[i]-1]+'/'+mask_dir[j]+'/immask.mat' # large mask
                     # 'mask': d_root+'Data_Qian_skull_h5/'+str(person[i])+'/'+str(j+1)+'-skull.mat' # small mask
                     })
            
