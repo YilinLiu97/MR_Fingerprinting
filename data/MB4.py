@@ -46,11 +46,14 @@ class MRFDataset(BaseDataset):
         self.data_paths = []
         for i in range(len(person)):
             a = os.listdir(d_root+'MB4/'+person_path[person[i]-1])
-            a.sort(key=lambda f: int(filter(str.isdigit, f)))
+            #a.sort(key=lambda f: int(filter(str.isdigit, f)))
+            a = natsorted(a)
             label_dir = os.listdir(d_root+'MB4/Labels/'+person_path[person[i]-1])
-            label_dir.sort(key=lambda f: int(filter(str.isdigit, f)))
+            label_dir = natsorted(label_dir)
+            #label_dir.sort(key=lambda f: int(filter(str.isdigit, f)))
             mask_dir = os.listdir(d_root+'training/Masks/'+person_path[person[i]-1])
-            mask_dir.sort(key=lambda f: int(filter(str.isdigit, f)))
+            mask_dir = natsorted(mask_dir)
+            #mask_dir.sort(key=lambda f: int(filter(str.isdigit, f)))
             print('%%%%%%%%%%%%%%%%% label_dir: ', label_dir)
             print('%%%%%%%%%%%%%%%%% mask_dir: ', mask_dir)
             print('%%%%%%%%%%%%%%%% len(a): ', len(a))
@@ -58,12 +61,27 @@ class MRFDataset(BaseDataset):
                 if p[0] == '.':
                     a.remove(p)
             for j in range(slice_N[person[i]-1]):
-                print('j: ', j)
-                self.data_paths.append({
-                    'imMRF': d_root+'MB4/'+ person_path[person[i]-1]+'/'+a[j]+'/imMRF_all_simulated.mat',
-                    'Tmap': d_root+'MB4/Labels/'+person_path[person[i]-1]+'/'+label_dir[j]+'/patternmatching.mat', # sparse dict
-                    # 'Tmap': d_root+person_path[person[i]-1]+'/'+a[j]+'/patternmatching_densedict.mat', # dense dict
-                    'mask': d_root+'training/Masks/'+person_path[person[i]-1]+'/'+mask_dir[j]+'/immask.mat' # large mask
-                    # 'mask': d_root+'Data_Qian_skull_h5/'+str(person[i])+'/'+str(j+1)+'-skull.mat' # small mask
-                    })
-           
+      
+#                print('person: ', person)
+#                print('slice_N: ', slice_N)
+#                print('person[3]: ', person[3])
+                if j+3*(self.n_Network-1) >= slice_N[person[i]-1]:
+                   #print('slice_N[person[i]]: ', slice_N[person[i]])
+                   print('j-(slice_N[person[i]-1]-3*(self.n_Network-1)): ', j-(slice_N[person[i]-1]-3*(self.n_Network-1)))
+                   self.data_paths.append({
+                        'imMRF': d_root+'MB4/'+ person_path[person[i]-1]+'/'+a[j]+'/imMRF_all_simulated.mat',
+                        'Tmap': d_root+'MB4/Labels/'+person_path[person[i]-1]+'/'+label_dir[j-(slice_N[person[i]-1]-3*(self.n_Network-1))]+'/patternmatching.mat', # sparse dict
+                        # 'Tmap': d_root+person_path[person[i]-1]+'/'+a[j]+'/patternmatching_densedict.mat', # dense dict
+                        'mask': d_root+'training/Masks/'+person_path[person[i]-1]+'/'+mask_dir[j-(slice_N[person[i]-1]-3*(self.n_Network-1))]+'/immask.mat' # large mask
+                        # 'mask': d_root+'Data_Qian_skull_h5/'+str(person[i])+'/'+str(j+1)+'-skull.mat' # small mask
+                        })
+                else:
+                   #print('j+3*(self.n_Network-1): ', j+3*(self.n_Network-1))
+                   self.data_paths.append({
+                        'imMRF': d_root+'MB4/'+ person_path[person[i]-1]+'/'+a[j]+'/imMRF_all_simulated.mat',
+                        'Tmap': d_root+'MB4/Labels/'+person_path[person[i]-1]+'/'+label_dir[j+3*(self.n_Network-1)]+'/patternmatching.mat', # sparse dict
+                        # 'Tmap': d_root+person_path[person[i]-1]+'/'+a[j]+'/patternmatching_densedict.mat', # dense dict
+                        'mask': d_root+'training/Masks/'+person_path[person[i]-1]+'/'+mask_dir[j+3*(self.n_Network-1)]+'/immask.mat' # large mask
+                        # 'mask': d_root+'Data_Qian_skull_h5/'+str(person[i])+'/'+str(j+1)+'-skull.mat' # small mask
+                        })
+             
